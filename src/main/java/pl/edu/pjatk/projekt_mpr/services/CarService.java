@@ -24,6 +24,12 @@ public class CarService {
         this.carList.add(car);
     }
 
+    public void deleteCar(int id) {
+        if(id >= 0 && id < carList.size()) {
+            this.carList.remove(id);
+        }
+    }
+
     public Car findCarById(int id) {
         if(id >= 0 && id < carList.size()) {
             return carList.get(id);

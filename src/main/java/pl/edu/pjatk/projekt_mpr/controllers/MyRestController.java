@@ -28,4 +28,9 @@ public class MyRestController {
     public void createCar(@RequestBody Car car) {
         this.carService.createCar(car);
     }
+
+    @DeleteMapping("car/{id}")
+    public void deleteCar(@PathVariable int id) {
+        this.carService.deleteCar(id);
+    }
 }
