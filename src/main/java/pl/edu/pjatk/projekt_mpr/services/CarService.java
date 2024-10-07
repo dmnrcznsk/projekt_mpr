@@ -37,4 +37,8 @@ public class CarService {
             return null;
         }
     }
+
+    public void updateCar(int id, Car car) {
+        this.carList.set(id, car);
+    }
 }

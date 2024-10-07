@@ -33,4 +33,9 @@ public class MyRestController {
     public void deleteCar(@PathVariable int id) {
         this.carService.deleteCar(id);
     }
+
+    @PutMapping("car/{id}")
+    public void updateCar(@PathVariable int id, @RequestBody Car car) {
+        this.carService.updateCar(id, car);
+    }
 }
