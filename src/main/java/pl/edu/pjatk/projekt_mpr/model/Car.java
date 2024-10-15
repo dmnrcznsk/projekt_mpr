@@ -12,12 +12,14 @@ public class Car {
     private Long id;
     private String make;
     private String color;
+    private int identificator;
 
     public Car(){}
 
     public Car(String make, String color) {
         this.make = make;
         this.color = color;
+        this.identificator = this.calculateIdentificator();
     }
     public String getMake() {
         return make;
@@ -36,5 +38,20 @@ public class Car {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getIdentificator() {
+        return identificator;
+    }
+
+    private int calculateIdentificator() {
+        int sum = 0;
+        String combined = make + color;
+
+        for (char c : combined.toCharArray()) {
+            sum += Character.getNumericValue(c);
+        }
+
+        return sum;
     }
 }
