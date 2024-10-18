@@ -22,7 +22,7 @@ public class MyRestController {
     }
     @GetMapping("car/{id}")
     public Optional<Car> get(@PathVariable Long id) {
-        return this.carService.get(id);
+        return this.carService.getById(id);
     }
 
     @GetMapping("car/make/{make}")
@@ -30,18 +30,24 @@ public class MyRestController {
         return this.carService.getCarByMake(make);
     }
 
-    @PostMapping("car")
+    @GetMapping("car/color/{color}")
+    public List<Car> getByColor(@PathVariable String color) {
+        return this.carService.getCarByColor(color);
+    }
+
+    @PostMapping("car/add")
     public void createCar(@RequestBody Car car) {
+        car.setIdentificator(car.calculateIdentificator());
         this.carService.createCar(car);
     }
 
-    @DeleteMapping("car/{id}")
-    public void deleteCar(@PathVariable int id) {
+    @DeleteMapping("car/delete/{id}")
+    public void deleteCar(@PathVariable Long id) {
         this.carService.deleteCar(id);
     }
 
-    @PutMapping("car/{id}")
-    public void updateCar(@PathVariable int id, @RequestBody Car car) {
+    @PatchMapping("car/update/{id}")
+    public void updateCar(@PathVariable Long id, @RequestBody Car car) {
         this.carService.updateCar(id, car);
     }
 }

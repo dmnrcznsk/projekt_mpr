@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CarRepository extends CrudRepository<Car, Long> {
-    public List<Car> findByMake(String make);
+     List<Car> findByMake(String make);
+     List<Car> findByColor(String color);
 }

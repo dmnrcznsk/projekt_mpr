@@ -44,7 +44,11 @@ public class Car {
         return identificator;
     }
 
-    private int calculateIdentificator() {
+    public void setIdentificator(int identificator) {
+        this.identificator = identificator;
+    }
+
+    public int calculateIdentificator() {
         int sum = 0;
         String combined = make + color;
 

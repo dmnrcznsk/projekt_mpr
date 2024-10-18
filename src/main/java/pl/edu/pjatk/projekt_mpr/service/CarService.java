@@ -1,18 +1,16 @@
 package pl.edu.pjatk.projekt_mpr.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pl.edu.pjatk.projekt_mpr.model.Car;
 import pl.edu.pjatk.projekt_mpr.repository.CarRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class CarService {
     private CarRepository carRepository;
-    List<Car> carList = new ArrayList<>();
 
     @Autowired
     public CarService(CarRepository repository) {
@@ -27,29 +25,44 @@ public class CarService {
         return this.carRepository.findByMake(make);
     }
 
+    public List<Car> getCarByColor(String color) {
+        return this.carRepository.findByColor(color);
+    }
+
     public List<Car> getAllCars() {
         return (List<Car>) this.carRepository.findAll();
     }
 
-    public List<Car> getCarList() {
-        return carList;
-    }
-
     public void createCar(Car car) {
-        this.carList.add(car);
+        this.carRepository.save(car);
     }
 
-    public void deleteCar(int id) {
-        if(id >= 0 && id < carList.size()) {
-            this.carList.remove(id);
-        }
+    public void deleteCar(Long id) {
+        this.carRepository.deleteById(id);
     }
 
-    public Optional<Car> get(Long id) {
+    public Optional<Car> getById(Long id) {
         return this.carRepository.findById(id);
     }
 
-    public void updateCar(int id, Car car) {
-        this.carList.set(id, car);
+    public void updateCar(Long id, Car car) {
+        Optional<Car> existingCar = this.carRepository.findById(id);
+
+        if(existingCar.isPresent()) {
+            Car updatedCar = existingCar.get();
+
+            if (car.getMake() != null) {
+                updatedCar.setMake(car.getMake());
+            }
+
+            if (car.getColor() != null) {
+                updatedCar.setColor(car.getColor());
+            }
+
+            this.carRepository.save(updatedCar);
+
+        } else {
+            throw new RuntimeException("Car with ID " + id + " not found.");
+        }
     }
 }
