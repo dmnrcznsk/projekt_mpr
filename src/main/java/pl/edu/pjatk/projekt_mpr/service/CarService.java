@@ -11,9 +11,11 @@ import java.util.Optional;
 @Service
 public class CarService {
     private CarRepository carRepository;
+    private StringUtilsService sus = new StringUtilsService();
 
     @Autowired
-    public CarService(CarRepository repository) {
+    public CarService(CarRepository repository, StringUtilsService sus) {
+        this.sus = sus;
         this.carRepository = repository;
         this.carRepository.save(new Car("BMW", "black"));
         this.carRepository.save(new Car("Audi", "red"));
@@ -22,18 +24,39 @@ public class CarService {
     }
 
     public List<Car> getCarByMake(String make) {
-        return this.carRepository.findByMake(make);
+        List<Car> cars = carRepository.findByMake(make);
+        cars.forEach(car ->{
+          car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
+          car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
+        });
+        return cars;
     }
 
     public List<Car> getCarByColor(String color) {
-        return this.carRepository.findByColor(color);
+        List<Car> cars = carRepository.findByColor(color);
+        cars.forEach(car ->{
+            car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
+            car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
+        });
+        return cars;
     }
 
-    public List<Car> getAllCars() {
+    public List<Car> getRawOutputOfAllCars() {
         return (List<Car>) this.carRepository.findAll();
     }
 
+    public List<Car> getAllCars() {
+        List<Car> cars = (List<Car>) this.carRepository.findAll();
+        cars.forEach(car ->{
+            car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
+            car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
+        });
+        return cars;
+    }
+
     public void createCar(Car car) {
+        car.setMake(sus.toUpperCase(car.getMake()));
+        car.setColor(sus.toUpperCase(car.getColor()));
         this.carRepository.save(car);
     }
 
@@ -42,7 +65,12 @@ public class CarService {
     }
 
     public Optional<Car> getById(Long id) {
-        return this.carRepository.findById(id);
+        return this.carRepository.findById(id)
+                .map(car -> {
+                    car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
+                    car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
+                    return car;
+                });
     }
 
     public void updateCar(Long id, Car car) {

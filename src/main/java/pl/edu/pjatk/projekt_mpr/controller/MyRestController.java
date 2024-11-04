@@ -20,6 +20,13 @@ public class MyRestController {
     public List<Car> getAll() {
         return this.carService.getAllCars();
     }
+
+
+    @GetMapping("car/all/raw")
+    public List<Car> getAllRaw() {
+        return this.carService.getRawOutputOfAllCars();
+    }
+
     @GetMapping("car/{id}")
     public Optional<Car> get(@PathVariable Long id) {
         return this.carService.getById(id);
