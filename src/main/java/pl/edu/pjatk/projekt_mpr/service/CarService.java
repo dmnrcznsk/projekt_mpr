@@ -2,6 +2,8 @@ package pl.edu.pjatk.projekt_mpr.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.pjatk.projekt_mpr.exception.CarAlreadyExistsException;
+import pl.edu.pjatk.projekt_mpr.exception.CarNotFoundException;
 import pl.edu.pjatk.projekt_mpr.model.Car;
 import pl.edu.pjatk.projekt_mpr.repository.CarRepository;
 
@@ -25,6 +27,9 @@ public class CarService {
 
     public List<Car> getCarByMake(String make) {
         List<Car> cars = carRepository.findByMake(make);
+
+        if(cars.isEmpty()) { throw new CarNotFoundException("Cars with make " + make + " not found"); }
+
         cars.forEach(car ->{
           car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
           car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
@@ -34,6 +39,9 @@ public class CarService {
 
     public List<Car> getCarByColor(String color) {
         List<Car> cars = carRepository.findByColor(color);
+
+        if(cars.isEmpty()) { throw new CarNotFoundException("Cars with color " + color + " not found"); }
+
         cars.forEach(car ->{
             car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
             car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
@@ -57,20 +65,44 @@ public class CarService {
     public void createCar(Car car) {
         car.setMake(sus.toUpperCase(car.getMake()));
         car.setColor(sus.toUpperCase(car.getColor()));
+
+        Optional<Car> findCar = this.carRepository.findByIdentificator(car.getIdentificator());
+
+        if (findCar.isPresent()) {
+            throw new CarAlreadyExistsException();
+        }
+
         this.carRepository.save(car);
     }
 
     public void deleteCar(Long id) {
+        Optional<Car> car = this.carRepository.findById(id);
+
+        if(car.isEmpty()) {
+            throw new CarNotFoundException("Car with id " + id + " not found");
+        }
+
         this.carRepository.deleteById(id);
     }
 
-    public Optional<Car> getById(Long id) {
-        return this.carRepository.findById(id)
-                .map(car -> {
-                    car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
-                    car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
-                    return car;
-                });
+    public Car getById(Long id) {
+        Optional<Car> car = this.carRepository.findById(id);
+
+        if(car.isEmpty()) {
+            throw new CarNotFoundException("Car with id " + id + " not found");
+        }
+
+        return car.get();
+    }
+
+    public Car getByIdentificator(int identificator) {
+        Optional<Car> car = this.carRepository.findByIdentificator(identificator);
+
+        if(car.isEmpty()) {
+            throw new CarNotFoundException("Car with identificator " + identificator + " not found");
+        }
+
+        return car.get();
     }
 
     public void updateCar(Long id, Car car) {
@@ -90,7 +122,7 @@ public class CarService {
             this.carRepository.save(updatedCar);
 
         } else {
-            throw new RuntimeException("Car with ID " + id + " not found.");
+            throw new CarNotFoundException();
         }
     }
 }
