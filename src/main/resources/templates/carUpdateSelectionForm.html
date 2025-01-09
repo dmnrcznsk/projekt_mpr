@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wybierz samochód do aktualizacji</title>
+  <link href="/formStyles.css" rel="stylesheet">
+</head>
+<body>
+<h1>Wybierz samochód do aktualizacji</h1>
+<form action="/view/update/form" method="get">
+  <label for="car">Wybierz samochód:</label>
+  <select id="car" name="id" required>
+    <option value="" disabled selected>Wybierz samochód</option>
+    <th:block th:each="car : ${cars}">
+      <option th:value="${car.id}" th:text="${car.make} + ' - ' + ${car.color} + ' (ID: ' + ${car.id} + ')'"></option>
+    </th:block>
+  </select>
+  <br><br>
+  <button type="submit">Edytuj</button>
+  <a href="/view/all">Anuluj</a>
+</form>
+</body>
+</html>

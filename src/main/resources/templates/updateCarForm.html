@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aktualizuj samochód</title>
+  <link href="/formStyles.css" rel="stylesheet">
+</head>
+<body>
+<h1>Aktualizuj samochód</h1>
+<form action="/view/update" method="post">
+  <label for="make">Marka:</label>
+  <input type="text" id="make" name="make" th:value="${car.make}" required>
+  <br>
+  <label for="color">Kolor:</label>
+  <input type="text" id="color" name="color" th:value="${car.color}" required>
+  <br>
+  <input type="hidden" name="id" th:value="${car.id}">
+  <button type="submit">Zaktualizuj</button>
+  <a href="/view/all">Anuluj</a>
+</form>
+</body>
+</html>

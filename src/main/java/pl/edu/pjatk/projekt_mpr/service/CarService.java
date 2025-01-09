@@ -1,5 +1,10 @@
 package pl.edu.pjatk.projekt_mpr.service;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.pjatk.projekt_mpr.exception.CarAlreadyExistsException;
@@ -7,6 +12,8 @@ import pl.edu.pjatk.projekt_mpr.exception.CarNotFoundException;
 import pl.edu.pjatk.projekt_mpr.model.Car;
 import pl.edu.pjatk.projekt_mpr.repository.CarRepository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +38,8 @@ public class CarService {
         if(cars.isEmpty()) { throw new CarNotFoundException("Cars with make " + make + " not found"); }
 
         cars.forEach(car ->{
-          car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
-          car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
+            car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
+            car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
         });
         return cars;
     }
@@ -55,6 +62,9 @@ public class CarService {
 
     public List<Car> getAllCars() {
         List<Car> cars = (List<Car>) this.carRepository.findAll();
+
+        if(cars.isEmpty()) { throw new CarNotFoundException("Cars not found"); }
+
         cars.forEach(car ->{
             car.setMake(sus.toLowerCaseButCapitalizeFirstLetter(car.getMake()));
             car.setColor(sus.toLowerCaseButCapitalizeFirstLetter(car.getColor()));
@@ -123,6 +133,36 @@ public class CarService {
 
         } else {
             throw new CarNotFoundException();
+        }
+    }
+
+    public void generatePDF(Long id) {
+        Car car = getById(id);
+        try (PDDocument document = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
+                contentStream.beginText();
+                contentStream.setLeading(14.5f);
+                contentStream.newLineAtOffset(50, 750);
+
+                contentStream.showText("Wynik zapytania:");
+                contentStream.newLine();
+                contentStream.showText("ID: " + car.getId());
+                contentStream.newLine();
+                contentStream.showText("Make: " + car.getMake());
+                contentStream.newLine();
+                contentStream.showText("Color: " + car.getColor());
+                contentStream.newLine();
+                contentStream.showText("Identificator: " + car.getIdentificator());
+                contentStream.endText();
+            }
+
+            document.save("result.pdf");
+        } catch (IOException e) {
+            throw new RuntimeException("Błąd podczas generowania PDF: " + e.getMessage(), e);
         }
     }
 }

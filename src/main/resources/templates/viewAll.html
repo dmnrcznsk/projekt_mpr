@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Wszystkie obiekty</title>
+    <link href="/viewAll.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>WSZYSTKIE SAMOCHODY</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Make</th>
+            <th>Color</th>
+            <th>Identificator</th>
+        </tr>
+        <tr th:each = "car : ${cars}">
+            <td th:text = "${car.getId()}"></td>
+            <td th:text = "${car.getMake()}"></td>
+            <td th:text = "${car.getColor()}"></td>
+            <td th:text = "${car.getIdentificator()}"></td>
+        </tr>
+    </table>
+</body>
+</html>

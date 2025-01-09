@@ -48,6 +48,12 @@ public class MyRestController {
         return new ResponseEntity<>(this.carService.getByIdentificator(identifier), HttpStatus.OK);
     }
 
+    @GetMapping("car/pdf/{id}")
+    private ResponseEntity<Car> getPdf(@PathVariable Long id) {
+        this.carService.generatePDF(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("car/add")
     public ResponseEntity<Car> createCar(@RequestBody Car car) {
         car.setIdentificator(car.calculateIdentificator());

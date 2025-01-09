@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuń samochód</title>
+  <link href="/formStyles.css" rel="stylesheet">
+</head>
+<body>
+<h1>Wybierz samochód do usunięcia</h1>
+<form action="/view/delete" method="post">
+  <label for="car">Wybierz samochód:</label>
+  <select id="car" name="id" required>
+    <option value="" disabled selected>Wybierz samochód</option>
+    <th:block th:each="car : ${cars}">
+      <option th:value="${car.id}" th:text="${car.make} + ' - ' + ${car.color} + ' (ID: ' + ${car.id} + ')'"></option>
+    </th:block>
+  </select>
+  <br><br>
+  <button type="submit">Usuń</button>
+  <a href="/view/all">Anuluj</a>
+</form>
+</body>
+</html>
