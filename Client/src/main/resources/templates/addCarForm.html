@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dodaj nowy samochód</title>
+  <link href="/formStyles.css" rel="stylesheet">
+</head>
+<body>
+<h1>Dodaj nowy samochód</h1>
+<form th:action="@{/cars}" th:method="post" th:object="${car}">
+  <label for="make">Marka:</label>
+  <input type="text" id="make" th:field="${car.make}" placeholder="Wpisz markę" />
+  <br>
+  <label for="color">Kolor:</label>
+  <input type="text" id="color" th:field="${car.color}" placeholder="Wpisz kolor" />
+  <br>
+  <button type="submit">Dodaj</button>
+</form>
+<img class="animated-bg" src="/Capybara-PNG-Cutout.png" alt="Tło" />
+<img class="animated-bg" src="/Capybara-PNG-Cutout.png" alt="Tło" />
+<img class="animated-bg" src="/Capybara-PNG-Cutout.png" alt="Tło" />
+<script src="/script.js"></script>
+</body>
+</html>
